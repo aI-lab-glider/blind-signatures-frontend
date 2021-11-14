@@ -1,16 +1,12 @@
-# test_app
 
-A new Flutter project.
+## Voting App
 
-## Getting Started
+A mobile application for anonymous voting "Apollo" (**A**nonymous + **poll**s + **o**nline)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+#### TODO:
+* signing up and signing in
+* fetching data from server and sending data to server
+* signing and unsigning message with the vote
+*  logging out
+*  remembering active polls user already voted in
+* sorting, filtering
