@@ -10,17 +10,35 @@ class PollDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(Constants.appTitle)),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          PollDescription(nouns.elementAt(index)),
-          StartButton(index)
-        ]
-      )
-    );
+    /*TODO return PollDetailsScreen with a StartButton or PollStatistics
+       depending on poll due date and whether the user has voted in this poll.
+     */
+    if (index % 2 == 0) {
+      return Scaffold(
+          appBar: AppBar(title: Text(Constants.appTitle)),
+          body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                PollDescription(nouns.elementAt(index)),
+                StartButton(index)
+              ]
+          )
+      );
+    }
+    else {
+      return Scaffold(
+          appBar: AppBar(title: Text(Constants.appTitle)),
+          body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                PollDescription(nouns.elementAt(index)),
+                PollStatistics.withSampleData()
+              ]
+          )
+      );
+    }
   }
 }
 
