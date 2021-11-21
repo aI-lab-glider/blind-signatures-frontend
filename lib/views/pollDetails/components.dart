@@ -7,23 +7,6 @@ import 'package:flutter/material.dart';
 
 import 'package:test_app/data/constants.dart' as constants;
 
-class PollDescription extends StatelessWidget {
-
-  const PollDescription(this.pollName);
-
-  final String pollName;
-
-  String _getDescriptionByName(String name) {
-    var randomNouns = nouns.take(10);
-    return "${randomNouns.join(" ")} $name";
-  }
-
-  @override
-  Widget build(BuildContext context) => Text(
-      _getDescriptionByName(pollName),
-      textAlign: TextAlign.center
-  );
-}
 
 class StartButton extends StatelessWidget {
   const StartButton(this.index);

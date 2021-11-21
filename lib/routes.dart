@@ -3,6 +3,7 @@ import 'package:test_app/views/ballot/poll.dart';
 import 'package:test_app/views/pollDetails/poll_details.dart';
 import 'package:test_app/views/pollsList/polls.dart';
 import 'package:test_app/views/profile/profile.dart';
+import 'data/model/poll.dart';
 import 'main.dart';
 
 class Routes {
