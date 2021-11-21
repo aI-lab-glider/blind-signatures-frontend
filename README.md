@@ -1,4 +1,3 @@
-
 ## Voting App
 
 A mobile application for anonymous voting "Apollo" (**A**nonymous + **poll**s + **o**nline)
