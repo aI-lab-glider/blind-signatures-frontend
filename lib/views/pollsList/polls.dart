@@ -4,9 +4,7 @@ import 'package:test_app/views/pollDetails/poll_details.dart';
 import 'package:test_app/data/data_source.dart' as data;
 
 class PollsScreen extends StatelessWidget {
-  PollsScreen({Key? key}) : super(key: key);
-
-
+  const PollsScreen({Key? key}) : super(key: key);
 
   Widget _buildRow(BuildContext context, Poll poll){
     return ListTile(
@@ -22,7 +20,6 @@ class PollsScreen extends StatelessWidget {
     return ListView.builder(
         itemBuilder: (context, i) {
           if (i.isOdd) return const Divider();
-
           return _buildRow(context, pollsList[i ~/ 2]);
         },
       itemCount: pollsList.length * 2,

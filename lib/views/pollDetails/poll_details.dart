@@ -13,17 +13,14 @@ class PollDetailsScreen extends StatelessWidget {
 
   Widget _optionDependingOnExpirationDate({required Poll poll}) {
     if (poll.expirationDate.isAfter(DateTime.now())) {
-      return StartButton(poll.id);
+      return StartButton(poll);
     }
     else {
-      return PollStatistics.withSampleData();
+      return PollStatistics(poll.id, true);
     }
   }
 
   Widget _buildDetails({required Poll poll}) {
-    /*TODO return PollDetailsScreen with a StartButton or PollStatistics
-       depending on poll due date and whether the user has voted in this poll.
-     */
     return Scaffold(
         appBar: AppBar(title: Text(poll.title)),
         body: Column(
@@ -31,7 +28,7 @@ class PollDetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(poll.description, textAlign: TextAlign.center,)
               ),
               _optionDependingOnExpirationDate(poll: poll)
@@ -47,8 +44,8 @@ class PollDetailsScreen extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Scaffold(
-                appBar: AppBar(title: Text(constants.appTitle)),
-                body: Center( child: Text('An error has occurred!', textAlign: TextAlign.center,) ) ,
+                appBar: AppBar(title: const Text(constants.appTitle)),
+                body: const Center( child: Text('An error has occurred!', textAlign: TextAlign.center,) ) ,
               );
             } else if (snapshot.hasData) {
               return Container(
@@ -56,8 +53,8 @@ class PollDetailsScreen extends StatelessWidget {
               );
             } else {
               return Scaffold(
-                appBar: AppBar(title: Text(constants.appTitle)),
-                body: Center(
+                appBar: AppBar(title: const Text(constants.appTitle)),
+                body: const Center(
                   child: CircularProgressIndicator(),
                 )
               );

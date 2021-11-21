@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'model/poll.dart';
 import 'constants.dart' as constants;
+import 'model/question.dart';
 
 Future<List<Poll>> fetchPolls() async {
   final response = await http.get(
@@ -34,4 +35,19 @@ Future<Poll> fetchPollDetails({required int id}) async {
 Poll parsePollDetails(String responseBody) {
   final responseJson = jsonDecode(responseBody);
   return Poll.fromJson(responseJson);
+}
+
+Future<Question> fetchPollQuestion({required int id}) async {
+  final response = await http.get(
+    Uri.parse("${constants.fetchPollsURL}/$id/questions"),
+    /*headers: {
+      HttpHeaders.authorizationHeader: 'Basic your_api_token_here',
+    },*/
+  );
+  return compute(parsePollQuestion, response.body);
+}
+
+Question parsePollQuestion(String responseBody) {
+  final responseJson = jsonDecode(responseBody);
+  return Question.fromJson(responseJson);
 }
