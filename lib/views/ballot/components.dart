@@ -20,7 +20,7 @@ class SubmitButton extends StatelessWidget {
 
   void _submitVote(BuildContext context) {
     print("Sending vote."); // TODO: signing and sending logic
-    Navigator.pushNamed(context, '/');
+    Navigator.pushNamed(context, '/polls');
   }
 
   @override

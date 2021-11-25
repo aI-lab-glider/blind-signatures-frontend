@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:test_app/data/constants.dart' as Constants;
+import 'package:test_app/data/constants.dart' as constants;
 
 class LogoutButton extends StatelessWidget {
   @override
@@ -10,8 +10,8 @@ class LogoutButton extends StatelessWidget {
           onPressed: () => showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-              title: const Text(Constants.logOut),
-              content: const Text(Constants.logOutDescription),
+              title: const Text(constants.logOut),
+              content: const Text(constants.logOutDescription),
               actions: <Widget>[
                 TextButton(
                   onPressed: () => Navigator.pop(context, 'Cancel'),
