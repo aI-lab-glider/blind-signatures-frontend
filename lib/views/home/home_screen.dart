@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:test_app/authentication/auth.dart';
+import '../authentication/login.dart';
 import 'package:test_app/views/pollsList/polls.dart';
 import '../../data/constants.dart' as Constants;
 import '../pollsList/polls.dart';
@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage())); //TODO: Popup with warning
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Login())); //TODO: Popup with warning
                 Navigator.pushNamed(context, "/profile");
               },
             ),
