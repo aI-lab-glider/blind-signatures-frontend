@@ -46,7 +46,7 @@ class _RegisterState extends State<Register> {
           if (response['status']) {
             User user = response['data'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
-            Navigator.pushReplacementNamed(context, '/dashboard');
+            Navigator.pushReplacementNamed(context, '/homeScreen');
           }
         });
     };

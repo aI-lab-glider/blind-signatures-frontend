@@ -74,7 +74,7 @@ class App extends StatelessWidget {
                 }
               }),
           routes: {
-            '/': (context) => const HomeScreen(),
+            '/homeScreen': (context) => const HomeScreen(),
             '/login': (context) => const Login(),
             '/register': (context) => const Register(),
           }),

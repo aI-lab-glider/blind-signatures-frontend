@@ -68,7 +68,7 @@ class _LoginState extends State<Login> {
           if (response['status']) {
             User user = response['user'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
-            Navigator.pushReplacementNamed(context, '/');
+            Navigator.pushReplacementNamed(context, '/homeScreen');
           }
         });
     };
