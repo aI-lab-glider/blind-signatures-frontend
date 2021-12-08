@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/data/constants.dart' as constants;
+import 'package:test_app/login/utils/preferences.dart';
 
 class LogoutButton extends StatelessWidget {
   @override
@@ -18,7 +19,7 @@ class LogoutButton extends StatelessWidget {
                   child: const Text('Cancel'),
                 ),
                 TextButton(
-                  onPressed: () => Navigator.pop(context, 'OK'),
+                  onPressed: () => doLogOut(context),
                   child: const Text('OK'),
                 ),
               ],
@@ -27,6 +28,12 @@ class LogoutButton extends StatelessWidget {
           child: Text("Log Out")
         )
     );
+  }
+
+  doLogOut(BuildContext context) {
+    var prefs = UserPreferences();
+    prefs.removeUser();
+    Navigator.pushNamed(context, '/login');
   }
 
 }

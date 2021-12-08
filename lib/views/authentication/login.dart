@@ -73,34 +73,39 @@ class _LoginState extends State<Login> {
         });
     };
 
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          padding: EdgeInsets.all(40.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 15.0),
-                label("Email"),
-                const SizedBox(height: 5.0),
-                emailField,
-                const SizedBox(height: 20.0),
-                label("Password"),
-                const SizedBox(height: 5.0),
-                passwordField,
-                const SizedBox(height: 20.0),
-                auth.loggedInStatus == Status.authenticating
-                    ? loading
-                    : longButtons("Login", doLogin),
-                const SizedBox(height: 5.0),
-                registerButton
-              ],
+    return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: SafeArea(
+          child: Scaffold(
+            body: Container(
+              padding: EdgeInsets.all(40.0),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 15.0),
+                    label("Email"),
+                    const SizedBox(height: 5.0),
+                    emailField,
+                    const SizedBox(height: 20.0),
+                    label("Password"),
+                    const SizedBox(height: 5.0),
+                    passwordField,
+                    const SizedBox(height: 20.0),
+                    auth.loggedInStatus == Status.authenticating
+                        ? loading
+                        : longButtons("Login", doLogin),
+                    const SizedBox(height: 5.0),
+                    registerButton
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        )
+      );
   }
 }

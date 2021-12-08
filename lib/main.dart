@@ -48,24 +48,8 @@ class App extends StatelessWidget {
             '/homeScreen': (context) => const HomeScreen(),
             '/login': (context) => const Login(),
             '/register': (context) => const Register(),
-          }),
-    return const MaterialApp(
-      title: constants.appTitle,
-      initialRoute: '/',
-      onGenerateRoute: Routes.generateRoute,
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(constants.appTitle)),
-      body: const Center(child: const Text("Welcome!")),
-      drawer: AppDrawer(),
-    );
+          },
+        onGenerateRoute: Routes.generateRoute,
+      ));
   }
 }
