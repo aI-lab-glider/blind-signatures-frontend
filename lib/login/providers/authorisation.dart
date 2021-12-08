@@ -26,13 +26,13 @@ class AuthorisationProvider with ChangeNotifier {
   Status get registeredInStatus => _registeredInStatus;
 
 
-  Future<Map<String, dynamic>> login(String email, String publicKey) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     Map<String, dynamic> result;
 
     final Map<String, dynamic> loginData = {
       'user': {
         'email': email,
-        'publicKey': publicKey
+        'password': password
       }
     };
 
@@ -40,7 +40,7 @@ class AuthorisationProvider with ChangeNotifier {
     notifyListeners();
 
     Response response = await post(
-      AppApi.login as Uri,
+      Uri.parse(AppApi.login),
       body: json.encode(loginData),
       headers: {'Content-Type': 'application/json'}, //TODO: login
     );
@@ -48,7 +48,7 @@ class AuthorisationProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
 
-      var userData = responseData['data'];
+      var userData = responseData;
 
       User authUser = User.fromJson(userData);
 
@@ -82,7 +82,8 @@ class AuthorisationProvider with ChangeNotifier {
     _registeredInStatus = Status.registering;
     notifyListeners();
 
-    return await post(AppApi.register as Uri,
+    return await post(
+        Uri.parse(AppApi.register),
         body: json.encode(registrationData),
         headers: {'Content-Type': 'application/json'})
         .then(onValue)

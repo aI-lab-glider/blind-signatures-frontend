@@ -15,7 +15,7 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final formKey = GlobalKey<FormState>();
 
-  late String _email, _publicKey;
+  late String _email, _password;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +25,14 @@ class _RegisterState extends State<Register> {
       autofocus: false,
       onSaved: (value) => _email = value!,
       decoration: buildInputDecoration("Confirm password", Icons.email),
+    );
+
+    final passwordField = TextFormField(
+      autofocus: false,
+      obscureText: true,
+      validator: (value) => value!.isEmpty ? "Please enter password" : null,
+      onSaved: (value) => _password = value!,
+      decoration: buildInputDecoration("Confirm password", Icons.lock),
     );
 
     var loading = Row(
@@ -40,7 +48,7 @@ class _RegisterState extends State<Register> {
        form!.save();
 
        final Future<Map<String, dynamic>> successfulMessage =
-      auth.login(_email, _publicKey);
+      auth.login(_email, _password);
 
       successfulMessage.then((response) {
           if (response['status']) {
@@ -64,6 +72,10 @@ class _RegisterState extends State<Register> {
                 label("Email"),
                 const SizedBox(height: 5.0),
                 emailField,
+                const SizedBox(height: 20.0),
+                label("Password"),
+                const SizedBox(height: 5.0),
+                passwordField,
                 const SizedBox(height: 20.0),
                 auth.loggedInStatus == Status.registering
                     ? loading

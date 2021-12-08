@@ -27,10 +27,10 @@ class _LoginState extends State<Login> {
       decoration: buildInputDecoration("Confirm password", Icons.email),
     );
 
-    final publicKeyField = TextFormField(
+    final passwordField = TextFormField(
       autofocus: false,
       obscureText: true,
-      validator: (value) => value!.isEmpty ? "Please enter public key" : null,
+      validator: (value) => value!.isEmpty ? "Please enter password" : null,
       onSaved: (value) => _publicKey = value!,
       decoration: buildInputDecoration("Confirm password", Icons.lock),
     );
@@ -87,9 +87,9 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 5.0),
                 emailField,
                 const SizedBox(height: 20.0),
-                label("Public key"),
+                label("Password"),
                 const SizedBox(height: 5.0),
-                publicKeyField,
+                passwordField,
                 const SizedBox(height: 20.0),
                 auth.loggedInStatus == Status.authenticating
                     ? loading
