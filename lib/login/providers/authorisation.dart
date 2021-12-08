@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import '../user/user.dart';
+import '../../data/model/user.dart';
 import '../utils/api.dart';
 import '../utils/preferences.dart';
 
@@ -63,21 +63,21 @@ class AuthorisationProvider with ChangeNotifier {
       notifyListeners();
       result = {
         'status': false,
-        'message': json.decode(response.body)['error']
+        'message': 'Login Failed.'
       };
     }
     return result;
   }
 
-  FutureOr<dynamic> register(String email, String publicKey) async {
+  Future<dynamic> register(String email, String password, String publicKey) async {
 
     final Map<String, dynamic> registrationData = {
       'user': {
         'email': email,
-        'publicKey': publicKey,
+        'password': password,
+        'public_key': publicKey,
       }
     };
-
 
     _registeredInStatus = Status.registering;
     notifyListeners();
@@ -96,7 +96,7 @@ class AuthorisationProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
 
-      var userData = responseData['data'];
+      var userData = responseData;
 
       User authUser = User.fromJson(userData);
 
@@ -122,4 +122,21 @@ class AuthorisationProvider with ChangeNotifier {
     return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
   }
 
+  Future<Response> deleteUser(User user) async {
+    final Map<String, dynamic> userData = {
+      'user': {
+        'email': user.email,
+        'public_key': user.publicKey
+      }
+    };
+    final Response response = await delete(
+      Uri.parse(AppApi.delete),
+      body: json.encode(userData),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    return response;
+  }
 }

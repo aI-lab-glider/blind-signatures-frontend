@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../login/user/user.dart';
+import 'package:test_app/core/rsa.dart';
+import 'package:test_app/login/utils/preferences.dart';
+import '../../data/model/user.dart';
 import '../../login/providers/authorisation.dart';
 import '../../login/providers/user_provider.dart';
 import '../../login/utils/widgets.dart';
@@ -30,7 +32,20 @@ class _RegisterState extends State<Register> {
     final passwordField = TextFormField(
       autofocus: false,
       obscureText: true,
-      validator: (value) => value!.isEmpty ? "Please enter password" : null,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Please enter password";
+        }
+        if (value.length < 8) {
+          return "Password should contain at least 8 characters.";
+        }
+        if (!RegExp(".*[a-z].*", caseSensitive: true).hasMatch(value)) {
+          return "Password must contain a lowercase letter.";
+        }
+        if (!RegExp(".*[A-Z].*", caseSensitive: true).hasMatch(value)) {
+          return "Password must contain an uppercase letter.";
+        }
+      },
       onSaved: (value) => _password = value!,
       decoration: buildInputDecoration("Confirm password", Icons.lock),
     );
@@ -43,20 +58,46 @@ class _RegisterState extends State<Register> {
       ],
     );
 
+    final loginButton = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        FlatButton(
+          padding: EdgeInsets.only(left: 0.0),
+          child: Text("Log In", style: TextStyle(fontWeight: FontWeight.w300)),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/login');
+          },
+        ),
+      ],
+    );
+
     var doRegister = () {
       final form = formKey.currentState;
-       form!.save();
+      form!.save();
+      if (formKey.currentState!.validate()) {
+        var pair = generateRSAkeyPair(exampleSecureRandom());
+        final _public = pair.publicKey.modulus;
+        final _private = pair.privateKey.privateExponent;
 
-       final Future<Map<String, dynamic>> successfulMessage =
-      auth.login(_email, _password);
+        var prefs = UserPreferences();
+        prefs.saveKeys(_public!, _private!);
 
-      successfulMessage.then((response) {
+        final Future successfulMessage =
+        auth.register(_email, _password, _public.toString());
+
+        successfulMessage.then((response) {
           if (response['status']) {
             User user = response['data'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
             Navigator.pushReplacementNamed(context, '/homeScreen');
           }
+          else {
+            SnackBar snackBar = SnackBar(content: Text(
+                "Registration failed. Check the data provided and try again. If you already have account, please go back to Login page."));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         });
+      }
     };
 
     return SafeArea(
@@ -80,6 +121,8 @@ class _RegisterState extends State<Register> {
                 auth.loggedInStatus == Status.registering
                     ? loading
                     : longButtons("Register", doRegister),
+                const SizedBox(height: 5.0),
+                loginButton
               ],
             ),
           ),

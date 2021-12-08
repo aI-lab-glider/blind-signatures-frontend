@@ -8,7 +8,7 @@ import 'login/utils/preferences.dart';
 import 'package:provider/provider.dart';
 import 'data/constants.dart' as constants;
 
-import 'login/user/user.dart';
+import 'data/model/user.dart';
 import 'package:test_app/routes.dart';
 import 'package:test_app/views/utils/drawer.dart';
 import 'data/constants.dart' as constants;

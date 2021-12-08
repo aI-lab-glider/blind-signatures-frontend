@@ -14,9 +14,12 @@ class AppDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              image: DecorationImage(
+                  image: NetworkImage('https://media.istockphoto.com/illustrations/apollo-illustration-id471337771?k=20&m=471337771&s=612x612&w=0&h=wU3sdm1K0zuClEHgYViQQF8seZc-pn8JwHMLrFkWGNs='),
+                  fit: BoxFit.fitWidth
+              )
             ),
-            child: Text(constants.choose),
+            child: Text("")
           ),
           ListTile(
             title: const Text(constants.pollsList),

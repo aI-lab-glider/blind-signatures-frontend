@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-MaterialButton longButtons(String title, VoidCallback fun,
-    {Color color = const Color(0xFFF063057), Color textColor = Colors.white}) {
+MaterialButton longButtons(String title, VoidCallback fun) {
   return MaterialButton(
     onPressed: fun,
-    textColor: textColor,
-    color: color,
+    textColor: Colors.white,
+    color: Colors.blue,
     child: SizedBox(
       width: double.infinity,
       child: Text(

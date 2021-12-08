@@ -1,4 +1,4 @@
-import '../user/user.dart';
+import '../../data/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
@@ -9,6 +9,15 @@ class UserPreferences {
     prefs.setInt("userId", user.userId);
     prefs.setString("email", user.email);
     prefs.setString("publicKey", user.publicKey);
+
+    return prefs.commit();
+  }
+
+  Future<bool> saveKeys(BigInt public, BigInt private) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setString("publicKey", public.toString());
+    prefs.setString("rivate", private.toString());
 
     return prefs.commit();
   }

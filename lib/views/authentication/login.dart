@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../login/user/user.dart';
+import '../../data/model/user.dart';
 import '../../login/providers/authorisation.dart';
 import '../../login/providers/user_provider.dart';
 import '../../login/utils/widgets.dart';
@@ -69,6 +69,10 @@ class _LoginState extends State<Login> {
             User user = response['user'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
             Navigator.pushReplacementNamed(context, '/homeScreen');
+          }
+          else {
+            SnackBar snackBar = SnackBar(content: Text("Failed to log in. Check the data provided and try again. If don't have an account, please sign up."));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         });
     };
