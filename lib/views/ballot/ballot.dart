@@ -17,8 +17,7 @@ class BallotScreen extends StatelessWidget {
       body: Column(
         children: [
           QuestionText(question.questionText),
-          Options(question.answers.keys.toList()),
-          const SubmitButton(),
+          Ballot(question.answers.keys.toList(), poll.id),
         ],
       ),
     );
