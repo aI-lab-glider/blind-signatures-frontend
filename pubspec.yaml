@@ -42,6 +42,8 @@ dependencies:
   eosdart_ecc: ^0.4.4
   elliptic: ^0.3.5
   pointycastle: ^3.4.0
+  sha3: ^0.2.0
+  base32: 2.1.1
 
 dev_dependencies:
   flutter_test:

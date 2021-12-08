@@ -1,7 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:crypto/crypto.dart';
+import 'package:hex/hex.dart';
+import 'package:sha3/sha3.dart';
 import 'package:elliptic/elliptic.dart';
 import 'package:ninja_prime/ninja_prime.dart';
 
@@ -20,8 +19,7 @@ class Ring {
 
     List<String> pk_message = [];
     for (int i = 0; i < amountOfKeys; i++) {
-      pk_message.add(publicKeys[i].X.toString());
-      pk_message.add(publicKeys[i].Y.toString());
+      pk_message.add(publicKeys[i].X.toString() + publicKeys[i].Y.toString());
     }
     AffinePoint H = H2(pk_message);
     AffinePoint Y = ec.scalarMul(H, writeBigInt(privateKey));
@@ -33,13 +31,10 @@ class Ring {
 
     challenges[(myIndexKey + 1) % amountOfKeys] = H1([
       ...pk_message,
-      Y.X.toString(),
-      Y.Y.toString(),
+      Y.X.toString() + Y.Y.toString(),
       message,
-      GMulU.X.toString(),
-      GMulU.Y.toString(),
-      HMulU.X.toString(),
-      HMulU.Y.toString()
+      GMulU.X.toString() + GMulU.Y.toString(),
+      HMulU.X.toString() + HMulU.Y.toString()
     ]);
 
     for (int i = myIndexKey + 1; i < amountOfKeys; i++) {
@@ -51,13 +46,10 @@ class Ring {
           (ec.scalarMul(Y, writeBigInt(challenges[i]))));
       challenges[(i + 1) % amountOfKeys] = H1([
         ...pk_message,
-        Y.X.toString(),
-        Y.Y.toString(),
+        Y.X.toString() + Y.Y.toString(),
         message,
-        z_1.X.toString(),
-        z_1.Y.toString(),
-        z_2.X.toString(),
-        z_2.Y.toString()
+        z_1.X.toString() + z_1.Y.toString(),
+        z_2.X.toString() + z_2.Y.toString()
       ]);
     }
     for (int i = 0; i < myIndexKey; i++) {
@@ -69,13 +61,10 @@ class Ring {
           (ec.scalarMul(Y, writeBigInt(challenges[i]))));
       challenges[(i + 1) % amountOfKeys] = H1([
         ...pk_message,
-        Y.X.toString(),
-        Y.Y.toString(),
+        Y.X.toString() + Y.Y.toString(),
         message,
-        z_1.X.toString(),
-        z_1.Y.toString(),
-        z_2.X.toString(),
-        z_2.Y.toString()
+        z_1.X.toString() + z_1.Y.toString(),
+        z_2.X.toString() + z_2.Y.toString()
       ]);
     }
     signatures[myIndexKey] = (u - privateKey * challenges[myIndexKey]) % ec.n;
@@ -86,22 +75,21 @@ class Ring {
     String finalString = "";
     for (int i = 0; i < message.length; i++) {
       var bytes = utf8.encode(message[i]);
-      var digest = sha256.convert(bytes);
+      var k = SHA3(256, SHA3_PADDING, 256);
+      var digest = HEX.encode(k.update(bytes).digest());
       finalString += digest.toString();
     }
+
+    var k = SHA3(256, SHA3_PADDING, 256);
+    finalString = HEX.encode(k.update(utf8.encode(finalString)).digest());
     return BigInt.parse(finalString, radix: 16);
   }
 
-  Uint8List writeBigInt(BigInt number) {
-    // Not handling negative numbers. Decide how you want to do that.
+  List<int> writeBigInt(BigInt number) {
     int bytes = (number.bitLength + 7) >> 3;
-    var b256 = new BigInt.from(256);
-    var result = new Uint8List(bytes);
-    for (int i = 0; i < bytes; i++) {
-      result[i] = number.remainder(b256).toInt();
-      number = number >> 8;
-    }
-    return result;
+    var hex = number.toRadixString(16).padLeft(bytes * 2, '0');
+    return List<int>.generate(
+        bytes, (i) => int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16));
   }
 
   AffinePoint H2(List<String> message) {
@@ -130,7 +118,7 @@ class Ring {
     if (n < BigInt.from(3)) {
       throw Exception(['jacobi']);
     }
-    if (n % BigInt.two == BigInt.one) {
+    if (n % BigInt.two != BigInt.one) {
       throw Exception(['jacobi']);
     }
     a = a % n;
