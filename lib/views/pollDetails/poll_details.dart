@@ -1,45 +1,66 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:test_app/data/constants.dart' as Constants;
+import 'package:test_app/data/constants.dart' as constants;
+import 'package:test_app/data/model/poll.dart';
 
 import 'components.dart';
+import 'package:test_app/data/data_source.dart' as data;
 
 class PollDetailsScreen extends StatelessWidget {
-  const PollDetailsScreen(this.index);
-  final int index;
+  const PollDetailsScreen(this.id);
 
-  @override
-  Widget build(BuildContext context) {
-    /*TODO return PollDetailsScreen with a StartButton or PollStatistics
-       depending on poll due date and whether the user has voted in this poll.
-     */
-    if (index % 2 == 0) {
-      return Scaffold(
-          appBar: AppBar(title: Text(Constants.appTitle)),
-          body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                PollDescription(nouns.elementAt(index)),
-                StartButton(index)
-              ]
-          )
-      );
+  final int id;
+
+  Widget _optionDependingOnExpirationDate({required Poll poll}) {
+    if (poll.expirationDate.isAfter(DateTime.now())) {
+      return StartButton(poll);
     }
     else {
-      return Scaffold(
-          appBar: AppBar(title: Text(Constants.appTitle)),
-          body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                PollDescription(nouns.elementAt(index)),
-                PollStatistics.withSampleData()
-              ]
-          )
-      );
+      return PollStatistics(poll.id, true);
     }
   }
-}
 
+  Widget _buildDetails({required Poll poll}) {
+    return Scaffold(
+        appBar: AppBar(title: Text(poll.title)),
+        body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(poll.description, textAlign: TextAlign.center,)
+              ),
+              _optionDependingOnExpirationDate(poll: poll)
+            ]
+        )
+    );
+  }
+
+    @override
+    Widget build(BuildContext context) {
+      return FutureBuilder<Poll>(
+          future: data.fetchPollDetails(id: id),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Scaffold(
+                appBar: AppBar(title: const Text(constants.appTitle)),
+                body: const Center( child: Text('An error has occurred!', textAlign: TextAlign.center,) ) ,
+              );
+            } else if (snapshot.hasData) {
+              return Container(
+                  child: _buildDetails(poll: snapshot.data!)
+              );
+            } else {
+              return Scaffold(
+                appBar: AppBar(title: const Text(constants.appTitle)),
+                body: const Center(
+                  child: CircularProgressIndicator(),
+                )
+              );
+            }
+          }
+      );
+    }
+}
 

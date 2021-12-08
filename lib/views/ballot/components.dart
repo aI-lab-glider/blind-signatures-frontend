@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Question extends StatelessWidget {
-  const Question(this.pollName);
-  final String pollName;
+class QuestionText extends StatelessWidget {
+  const QuestionText(this.text);
+  final String text;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: EdgeInsets.all(16.0),
-        child: Text("What of options for $pollName do you choose?")
+        child: Text(text)
     );
   }
 
@@ -18,38 +18,35 @@ class Question extends StatelessWidget {
 class SubmitButton extends StatelessWidget {
   const SubmitButton();
 
-  void _submitVote() {
-    print("Sending vote.");
+  void _submitVote(BuildContext context) {
+    print("Sending vote."); // TODO: signing and sending logic
+    Navigator.pushNamed(context, '/');
   }
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () => _submitVote(),
-        child: Text("Submit")
+        onPressed: () => _submitVote(context),
+        child: const Text("Submit")
     );
   }
 }
 
 
 class Options extends StatefulWidget {
-  Options(this.pollName);
+  Options(this.options);
 
-  final String pollName;
+  final List<String> options;
 
   @override
-  State<StatefulWidget> createState() => _OptionsState(pollName);
+  State<StatefulWidget> createState() => _OptionsState(options);
 }
 
 class _OptionsState extends State<Options> {
-  _OptionsState(this.pollName);
-  final String pollName;
+  _OptionsState(this.options);
+  final List<String> options;
 
   String? _chosenOption;
-
-  List<String> _loadOptionsForPoll(String pollName) {
-    return ["Option1", "Option2", "Option3", "Option4"];
-  }
 
   List<RadioListTile> _radioListTilesForOptions(List<String> options) {
     List<RadioListTile> radioTilesList = [];
@@ -72,7 +69,7 @@ class _OptionsState extends State<Options> {
   @override
   Widget build(BuildContext context) {
     return Column(
-        children: _radioListTilesForOptions(_loadOptionsForPoll(pollName))
+        children: _radioListTilesForOptions(options)
     );
   }
 }

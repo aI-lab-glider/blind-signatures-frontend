@@ -6,29 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:test_app/data/constants.dart' as constants;
+import 'package:test_app/data/data_source.dart' as data;
+import 'package:test_app/data/model/poll.dart';
+import 'package:test_app/data/model/question.dart';
 
-class PollDescription extends StatelessWidget {
-
-  const PollDescription(this.pollName);
-
-  final String pollName;
-
-  String _getDescriptionByName(String name) {
-    var randomNouns = nouns.take(10);
-    return "${randomNouns.join(" ")} $name";
-  }
-
-  @override
-  Widget build(BuildContext context) => Text(
-      _getDescriptionByName(pollName),
-      textAlign: TextAlign.center
-  );
-}
 
 class StartButton extends StatelessWidget {
-  const StartButton(this.index);
+  const StartButton(this.poll);
 
-  final int index;
+  final Poll poll;
 
   @override
   Widget build(BuildContext context) {
@@ -38,87 +24,101 @@ class StartButton extends StatelessWidget {
           Navigator.pushNamed(
               context,
               '/ballot',
-              arguments: nouns.elementAt(index)
+              arguments: poll
           );
         },
-        child: Text('Start!'),
+        child: const Text('Start!'),
       ),
     );
   }
 }
 
 class PollStatistics extends StatelessWidget {
-  final List<charts.Series<VotesPerOption, int>> seriesList;
+  final int pollID;
   final bool? animate;
 
-  const PollStatistics(this.seriesList, {Key? key, required this.animate}) : super(key: key);
+  const PollStatistics(this.pollID, this.animate);
 
-  factory PollStatistics.withSampleData() {
-    return PollStatistics(
-      _createSampleData(),
-      animate: true,
-    );
+  static List<charts.Series<VotesPerOption, String>> _createData(Map<String, int> answers) {
+    final data = answers.entries
+        .map((entry) => VotesPerOption(entry.key, entry.value))
+        .toList();
+
+    final overallVotesCount = data.fold(0, (int val, current) => val + current.votesCount);
+
+    return [
+      charts.Series<VotesPerOption, String>(
+        id: 'Votes',
+        domainFn: (VotesPerOption votesCount, _) => votesCount.option,
+        measureFn: (VotesPerOption votesCount, _) => votesCount.votesCount,
+        data: data,
+        labelAccessorFn: (VotesPerOption votesCount, _) => '${(votesCount.votesCount/overallVotesCount*100).toStringAsFixed(0)}%',
+      )
+    ];
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildStats({required Question question}) {
     return Column(
       children: [
         const Text("Poll Statistics", style: TextStyle(fontWeight: FontWeight.bold)),
         Container(
             padding: const EdgeInsets.all(8.0),
             child:  SizedBox(
-                          height: 200.0,
-                          child: charts.PieChart<int>(
-                            seriesList,
-                            animate: animate,
-                            defaultInteractions: true,
-                            defaultRenderer: charts.ArcRendererConfig(
-                                arcWidth: 100,
-                                arcRendererDecorators: [
-                                  charts.ArcLabelDecorator(
-                                      labelPosition: charts.ArcLabelPosition.auto
-                                  )
-                                ]
-                            ),
-                          )
-                      )
+                height: 200.0,
+                child: charts.PieChart<String>(
+                  _createData(question.answers),
+                  animate: animate,
+                  defaultInteractions: true,
+                  behaviors: [
+                    charts.DatumLegend(
+                      position: charts.BehaviorPosition.start,
+                      outsideJustification: charts.OutsideJustification.middleDrawArea,
+                      desiredMaxColumns: 2,
+                      desiredMaxRows: 5,)
+                  ],
+                  defaultRenderer: charts.ArcRendererConfig(
+                      arcWidth: 100,
+                      arcRendererDecorators: [
+                        charts.ArcLabelDecorator(
+                            labelPosition: charts.ArcLabelPosition.auto,
+                        )]
+                  ),
+                )
+            )
         ),
-        Text("${2+Random().nextInt(98)}% of all users voted."),
+        Text("${2+Random().nextInt(98)}% of all users voted."), // TODO: count this
       ],
     );
   }
 
-  /// Create one series with random sample data.
-  static List<charts.Series<VotesPerOption, int>> _createSampleData() {
-
-    var rng = new Random();
-
-    final data = [
-      VotesPerOption(0, rng.nextInt(100)),
-      VotesPerOption(1, rng.nextInt(100)),
-      VotesPerOption(2, rng.nextInt(100)),
-      VotesPerOption(3, rng.nextInt(100)),
-    ];
-
-    final overallVotesCount = data.fold(0, (int val, current) => val + current.votesCount);
-
-    return [
-      charts.Series<VotesPerOption, int>(
-        id: 'Votes',
-        domainFn: (VotesPerOption votesCount, _) => votesCount.optionID,
-        measureFn: (VotesPerOption votesCount, _) => votesCount.votesCount,
-        data: data,
-        labelAccessorFn: (VotesPerOption votesCount, _) => '#${votesCount.optionID}: ${(votesCount.votesCount/overallVotesCount*100).toStringAsFixed(0)}%',
-      )
-    ];
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Question>(
+        future: data.fetchPollQuestion(id: pollID),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            print(snapshot.error);
+            return const Center(
+              child: Text('An error has occurred!'),
+            );
+          } else if (snapshot.hasData) {
+            return Container(
+                child: _buildStats(question: snapshot.data!)
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        }
+    );
   }
 }
 
-/// Sample linear data type.
+
 class VotesPerOption {
-  int optionID;
+  String option;
   int votesCount;
 
-  VotesPerOption(this.optionID, this.votesCount);
+  VotesPerOption(this.option, this.votesCount);
 }
