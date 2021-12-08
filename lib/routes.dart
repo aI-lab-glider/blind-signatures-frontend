@@ -5,6 +5,7 @@ import 'package:test_app/views/pollsList/polls.dart';
 import 'package:test_app/views/profile/profile.dart';
 import 'data/model/poll.dart';
 import 'main.dart';
+import 'package:test_app/views/home/home_screen.dart';
 
 class Routes {
 
