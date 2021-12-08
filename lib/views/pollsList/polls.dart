@@ -14,7 +14,7 @@ class PollsScreen extends StatefulWidget {
 }
 
 class PollsListSortState extends State<PollsScreen> {
-  SortingParameter _sortBy = SortingParameter.title;
+  SortingParameter _sortBy = SortingParameter.titleAsc;
 
   Widget _buildRow(BuildContext context, Poll poll) {
     return ListTile(
@@ -25,11 +25,19 @@ class PollsListSortState extends State<PollsScreen> {
   }
 
   Widget _buildList({required List<Poll> pollsList}) {
-    if (_sortBy == SortingParameter.title) {
+    if (_sortBy == SortingParameter.titleAsc) {
       pollsList.sort((a, b) => a.title.compareTo(b.title));
     }
-    if (_sortBy == SortingParameter.date) {
+    if (_sortBy == SortingParameter.titleDesc) {
+      pollsList.sort((a, b) => a.title.compareTo(b.title));
+      pollsList = List.from(pollsList.reversed);
+    }
+    if (_sortBy == SortingParameter.dateAsc) {
       pollsList.sort((a, b) => a.expirationDate.compareTo(b.expirationDate));
+    }
+    if (_sortBy == SortingParameter.dateDesc) {
+      pollsList.sort((a, b) => a.expirationDate.compareTo(b.expirationDate));
+      pollsList = List.from(pollsList.reversed);
     }
     return ListView.builder(
       itemBuilder: (context, i) {
@@ -82,21 +90,49 @@ class PollsListSortState extends State<PollsScreen> {
                           itemBuilder: (BuildContext context) =>
                               <PopupMenuEntry<SortingParameter>>[
                                 PopupMenuItem<SortingParameter>(
-                                    value: SortingParameter.title,
+                                    value: SortingParameter.titleAsc,
                                     child: GestureDetector(
-                                      child: Text('Sort by title'),
+                                      child: Text('Sort by title (A to Z)'),
                                       onTap: () {
                                         setState(() =>
-                                            _sortBy = SortingParameter.title);
+                                            _sortBy = SortingParameter.titleAsc);
                                       },
                                     )),
                                 PopupMenuItem<SortingParameter>(
-                                    value: SortingParameter.date,
+                                    value: SortingParameter.titleDesc,
                                     child: GestureDetector(
-                                      child: Text('Sort by date'),
+                                      child: Text('Sort by title (Z to A)'),
                                       onTap: () {
                                         setState(() =>
-                                            _sortBy = SortingParameter.date);
+                                        _sortBy = SortingParameter.titleDesc);
+                                      },
+                                    )),
+                                PopupMenuItem<SortingParameter>(
+                                    value: SortingParameter.dateAsc,
+                                    child: GestureDetector(
+                                      child: Row(
+                                          children: [
+                                            Text('Sort by date '),
+                                            Icon(Icons.arrow_downward_rounded, color: Colors.black45)
+                                          ]
+                                      ),
+                                      onTap: () {
+                                        setState(() =>
+                                            _sortBy = SortingParameter.dateAsc);
+                                      },
+                                    )),
+                                PopupMenuItem<SortingParameter>(
+                                    value: SortingParameter.dateDesc,
+                                    child: GestureDetector(
+                                      child: Row(
+                                          children: [
+                                            Text('Sort by date '),
+                                            Icon(Icons.arrow_upward_rounded, color: Colors.black45)
+                                          ]
+                                      ),
+                                      onTap: () {
+                                        setState(() =>
+                                        _sortBy = SortingParameter.dateDesc);
                                       },
                                     )),
                               ]),
@@ -120,4 +156,4 @@ class PollsListSortState extends State<PollsScreen> {
   }
 }
 
-enum SortingParameter { title, date }
+enum SortingParameter { titleAsc, titleDesc, dateAsc, dateDesc }
