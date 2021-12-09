@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_app/views/authentication/register.dart';
 import 'package:test_app/views/ballot/poll.dart';
 import 'package:test_app/views/pollDetails/poll_details.dart';
 import 'package:test_app/views/pollsList/polls.dart';
@@ -18,6 +19,8 @@ class Routes {
         return MaterialPageRoute(builder: (_) => PollsScreen());
       case '/profile':
         return MaterialPageRoute(builder: (_) => ProfileScreen());
+      case '/register':
+        return MaterialPageRoute(builder: (_) => Register());
       case '/pollDetails':
         if (args is int) {
           return MaterialPageRoute(

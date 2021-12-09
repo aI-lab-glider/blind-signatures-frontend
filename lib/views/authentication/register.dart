@@ -35,18 +35,46 @@ class _RegisterState extends State<Register> {
       ],
     );
 
+    Future<void> _showDialogWithKeys() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('This are your public and private keys. Save private key in a safe place and do not show anyone.\nNotice: if you lost your key, you would not be able to restore it and login!'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const <Widget>[
+                  Text('Public ...'),
+                  Text('Private ...'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Done.'),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/homeScreen');
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     var doRegister = () {
       final form = formKey.currentState;
        form!.save();
 
-       final Future<Map<String, dynamic>> successfulMessage =
-      auth.login(_email, _publicKey);
+       final Future successfulMessage =
+      auth.register(_email, _publicKey);
 
       successfulMessage.then((response) {
           if (response['status']) {
             User user = response['data'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
-            Navigator.pushReplacementNamed(context, '/homeScreen');
+            _showDialogWithKeys();
           }
         });
     };

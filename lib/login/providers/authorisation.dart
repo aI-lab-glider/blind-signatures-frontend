@@ -69,7 +69,7 @@ class AuthorisationProvider with ChangeNotifier {
     return result;
   }
 
-  FutureOr<dynamic> register(String email, String publicKey) async {
+  Future<dynamic> register(String email, String publicKey) async {
 
     final Map<String, dynamic> registrationData = {
       'user': {
