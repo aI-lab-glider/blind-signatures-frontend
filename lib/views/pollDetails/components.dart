@@ -1,11 +1,9 @@
 import 'dart:math';
 
-import 'package:english_words/english_words.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:test_app/data/constants.dart' as constants;
 import 'package:test_app/data/data_source.dart' as data;
 import 'package:test_app/data/model/poll.dart';
 import 'package:test_app/data/model/question.dart';

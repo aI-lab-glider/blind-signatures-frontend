@@ -1,4 +1,3 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/data/constants.dart' as constants;
 import 'package:test_app/data/model/poll.dart';
